@@ -30,7 +30,7 @@ const router = express.Router()
 // INDEX
 // GET /orders
 router.get('/orders', requireToken, (req, res, next) => {
-  Order.find()
+  Order.find( ({ owner: req.user.id }))
     .then(orders => {
       // `orders` will be an array of Mongoose documents
       // we want to convert each one to a POJO, so we use `.map` to
@@ -59,7 +59,7 @@ router.get('/orders/:id', requireToken, (req, res, next) => {
 // POST /orders
 router.post('/orders', requireToken, (req, res, next) => {
   // set owner of new order to be current user
-  req.body.order.owner = req.user.id
+  req.body.order.owner = req.user._id
 
   Order.create(req.body.order)
     // respond to succesful `create` with status 201 and JSON of new "order"
